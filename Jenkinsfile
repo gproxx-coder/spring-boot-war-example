@@ -7,8 +7,8 @@ pipeline{
     }
 
 	parameters {
-		string(name:'test_ip', defaultValue:'http://0.0.0.0:8080', description:'Ip address of Test Server')
-		string(name:'prod_ip', defaultValue:'http://0.0.0.0:8080', description:'Ip address of Prod Server')
+		string(name:'test_ip', defaultValue:'http://18.204.17.218:8080', description:'Ip address of Test Server')
+		string(name:'prod_ip', defaultValue:'http://44.204.233.245:8080', description:'Ip address of Prod Server')
 	}
     
 	stages{
