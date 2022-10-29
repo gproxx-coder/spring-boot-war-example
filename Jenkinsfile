@@ -25,7 +25,7 @@ pipeline{
 		stage("Deploy to Test"){
 			steps{
 				// Deploy war/ear to a container
-				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: $params.test_ip)], contextPath: '/app', onFailure: false, war: '**/*.war'
+				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: $test_ip)], contextPath: '/app', onFailure: false, war: '**/*.war'
 			}
 		}
 		stage("Deploy to Prod"){
@@ -35,7 +35,7 @@ pipeline{
 			}
 			steps{
 				// Deploy war/ear to a container
-				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: $params.prod_ip)], contextPath: '/app', onFailure: false, war: '**/*.war'
+				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: $prod_ip)], contextPath: '/app', onFailure: false, war: '**/*.war'
 			}
 		}
 	}
