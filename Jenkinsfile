@@ -16,6 +16,9 @@ pipeline{
 			steps{
 				sh 'mvn test'
 			}
+			steps{
+				slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Test Success !!'
+			}
 		}
 		stage("Build"){
 			steps{
