@@ -14,21 +14,43 @@ pipeline{
 	stages{
 		stage("Test"){
 			steps{
+				slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Pipeline Started..'
 				sh 'mvn test'
 			}
-			steps{
-				slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Test Success !!'
+			post{
+				success {
+					slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Test Success..'
+				}
+				failure {
+					slackSend channel: 'jenkins-cicd', color: 'Red', message: 'Test Failed !!'
+				}
 			}
 		}
 		stage("Build"){
 			steps{
 				sh 'mvn package'
 			}
+			post{
+				success {
+					slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Build Success..'
+				}
+				failure {
+					slackSend channel: 'jenkins-cicd', color: 'Red', message: 'Build Failed !!'
+				}
+			}
 		}
 		stage("Deploy to Test"){
 			steps{
 				// Deploy war/ear to a container
 				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: test_ip)], contextPath: '/app', onFailure: false, war: '**/*.war'
+			}
+			post{
+				success {
+					slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Deployed to Test Server..'
+				}
+				failure {
+					slackSend channel: 'jenkins-cicd', color: 'Red', message: 'Could not deploy to Test Server !!'
+				}
 			}
 		}
 		stage("Deploy to Prod"){
@@ -40,18 +62,23 @@ pipeline{
 				// Deploy war/ear to a container
 				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: prod_ip)], contextPath: '/app', onFailure: false, war: '**/*.war'
 			}
+			post{
+				success {
+					slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Deployed to Prod Server..'
+				}
+				failure {
+					slackSend channel: 'jenkins-cicd', color: 'Red', message: 'Could not deploy to Prod Server !!'
+				}
+			}
 		}
 	}
 
 	post{
-		always{
-			echo "========always========"
-		}
 		success{
-			echo "========pipeline executed successfully ========"
+			slackSend channel: 'jenkins-cicd', color: 'Green', message: 'Pipeline Success !!'
 		}
 		failure{
-			echo "========pipeline execution failed========"
+			slackSend channel: 'jenkins-cicd', color: 'Red', message: 'Pipeline executed with Failure !!'
 		}
 	}
 }
