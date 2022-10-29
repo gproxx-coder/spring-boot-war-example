@@ -7,8 +7,8 @@ pipeline{
     }
 
 	parameters {
-		string(name:'test_ip', defaultValue:'0.0.0.0', description:'Ip address of Test Server')
-		string(name:'prod_ip', defaultValue:'0.0.0.0', description:'Ip address of Prod Server')
+		string(name:'test_ip', defaultValue:'http://0.0.0.0:8080', description:'Ip address of Test Server')
+		string(name:'prod_ip', defaultValue:'http://0.0.0.0:8080', description:'Ip address of Prod Server')
 	}
     
 	stages{
@@ -25,7 +25,7 @@ pipeline{
 		stage("Deploy to Test"){
 			steps{
 				// Deploy war/ear to a container
-				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: 'http://${test_ip}:8080')], contextPath: '/app', onFailure: false, war: '**/*.war'
+				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: params.test_ip)], contextPath: '/app', onFailure: false, war: '**/*.war'
 			}
 		}
 		stage("Deploy to Prod"){
@@ -35,7 +35,7 @@ pipeline{
 			}
 			steps{
 				// Deploy war/ear to a container
-				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: 'http://${prod_ip}:8080')], contextPath: '/app', onFailure: false, war: '**/*.war'
+				deploy adapters: [tomcat9(credentialsId: 'tomcat-admin', path: '', url: ${params.prod_ip})], contextPath: '/app', onFailure: false, war: '**/*.war'
 			}
 		}
 	}
